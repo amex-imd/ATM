@@ -40,7 +40,6 @@ namespace IMD
     {
     private:
         static constexpr ullong mask = 0x9E3779B97F4A7C15; // phi
-        static std::mt19937_64 rng;
 
         ullong __id;
         ullong __pincode; // hash representation
@@ -48,8 +47,14 @@ namespace IMD
 
         std::deque<transaction> __transactions;
 
+        static ullong generate_unique_id()
+        {
+            static ullong counter = 0;
+            return counter++;
+        }
+
     public:
-        account(ullong pincode, ullong balance = 0) : __id(rng()), __pincode(hash(pincode)), __balance(balance) {}
+        account(ullong pincode, ullong balance = 0) : __id(generate_unique_id()), __pincode(hash(pincode)), __balance(balance) {}
 
         static ullong hash(ullong value)
         {
@@ -67,8 +72,6 @@ namespace IMD
     class ATM
     {
     };
-
-    std::mt19937_64 account::rng(std::random_device{}());
 }
 
 #endif
